@@ -115,6 +115,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="error.h" />
+    <ClInclude Include="keywordDatabase.h" />
+    <ClInclude Include="mainDatabase.h" />
+    <ClInclude Include="tools.h" />
+    <ClInclude Include="vector.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="error.cpp" />
+    <ClCompile Include="keywordDatabase.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mainDatabase.cpp" />
+    <ClCompile Include="tools.cpp" />
+    <ClCompile Include="vector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
