@@ -30,24 +30,37 @@ bool operator != (const standString &a, const standString &b);
 const standString empty = standString("I took the one less traveled by,");
 const int emptyInt = -acos(-1);
 
+template <class T>
 class listData {
-	slice first;
+	T first;
     int pre, next, size;
 public:
-    listData();
-    ~listData();
-    int& getNext();
-	int& getPre();
-	int& getSize();
-    slice &getFirst();
+	listData() {};
+	~listData() {};
+	int& getNext() { return next; };
+	int& getPre() { return pre; };
+	int& getSize() { return size; };
+	T &getFirst() { return first; };
 };
 
+template <class T>
 class list {
-    listData data[listLength];
+    listData<T> data[listLength];
 public:
-    list();
-    ~list();
-    listData &operator[](int i);
+	list() {};
+	~list() {};
+	listData<T> &operator[](int i) { return data[i]; };
+};
+
+template<class T>
+class block {
+	T data[blockSize * 2];
+	int size = 0;
+public:
+	block() {};
+	~block() {};
+	T &operator[](int i) { return data[i]; };
+	int &getSize() { return size; };
 };
 
 class slice {
@@ -60,41 +73,31 @@ public:
 	~slice();
 	const standString &getKey() const;
 	const standString &getISBN() const;
+	constexpr bool isSlice() { return true; }
+
 };
+
+template <class T, class U> bool isSameType(const U &a, const T &b) { return false; }
+template <class T> bool isSameType(const T &a, const T &b) { return true; }
+
 bool operator < (const slice &a, const slice &b);
 bool operator == (const slice &a, const slice &b);
 bool operator <= (const slice &a, const slice &b);
-
-class block {
-	slice data[blockSize * 2];
-	int size = 0;
-public:
-	block();
-    ~block();
-	slice &operator[](int i);
-	int &getSize();
-};
 
 class record {
 	standString ISBN, name, author, keyword;
 	int quantity = 0;
 	double price = 0;
 public:
+	record();
 	record(standString ISBN);
 	~record();
 	record update(record data);
 	const standString &getISBN() const;
 };
-
-class detailBlock {
-	record data[blockSize * 2];
-	int size = 0;
-public:
-	detailBlock();
-	~detailBlock();
-	record &operator[](int);
-	int &getSize();
-};
+bool operator < (const record &a, const record &b);
+bool operator == (const record &a, const record &b);
+bool operator <= (const record &a, const record &b);
 
 class bin {
 	int n, a[listLength];

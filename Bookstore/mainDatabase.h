@@ -10,12 +10,12 @@
 
 class mainDatabase {
 	const int listBegin = sizeof(int);
-	const int binBegin = listBegin + sizeof(list);
+	const int binBegin = listBegin + sizeof(list<record>);
 	const int blockBegin = binBegin + sizeof(bin);
 	int blockCnt;
-	list List;
+	list<record> List;
 	bin Bin;
-	detailBlock Block;
+	block<record> Block;
 public:
 	mainDatabase();
 	~mainDatabase();

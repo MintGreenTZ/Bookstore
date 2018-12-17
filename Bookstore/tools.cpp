@@ -63,31 +63,12 @@ std::string standString::toString() {
 	return ret;
 }
 
-//******************************************************* listData
-
-listData::listData() {};
-
-listData::~listData() {};
-
-int& listData::getNext() {return next;}
-
-int& listData::getPre() { return pre; }
-
-int& listData::getSize() { return size; }
-
-slice& listData::getFirst() { return first; };
-
-//******************************************************* list
-
-list::list() {};
-
-list::~list() {};
-
-listData& list::operator[](int i) { return data[i]; }
-
 //******************************************************* slice
 
-slice::slice() {};
+slice::slice() {
+	this->key = "";
+	this->ISBN = "";
+};
 
 slice::slice(std::string key, std::string ISBN = "") {
 	this->key = key;
@@ -122,17 +103,11 @@ const standString& slice::getKey() const { return key; }
 
 const standString& slice::getISBN() const { return ISBN; }
 
-//******************************************************* block
-
-block::block() {}
-
-block::~block() {}
-
-slice& block::operator[] (int i) { return data[i]; }
-
-int& block::getSize() { return size; }
-
 //******************************************************* record
+
+record::record() {
+	this->ISBN = "";
+}
 
 record::record(standString ISBN) {
 	this->ISBN = ISBN;
@@ -161,16 +136,6 @@ bool operator <= (const record &a, const record &b) {
 }
 
 const standString& record::getISBN() const { return ISBN; }
-
-//******************************************************* detailBlock
-
-detailBlock::detailBlock() {}
-
-detailBlock::~detailBlock() {}
-
-record& detailBlock::operator[] (int i) { return data[i]; }
-
-int& detailBlock::getSize() { return size; }
 
 //******************************************************* bin
 

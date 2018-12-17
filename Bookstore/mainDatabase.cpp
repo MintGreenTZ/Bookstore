@@ -15,7 +15,7 @@ mainDatabase::mainDatabase() {
 		file.seekg(0);
 		file.read(reinterpret_cast<char *> (&blockCnt), sizeof(int));
 		file.read(reinterpret_cast<char *> (&Bin), sizeof(bin));
-		file.read(reinterpret_cast<char *> (&List), sizeof(list));
+		file.read(reinterpret_cast<char *> (&List), sizeof(list<record>));
 	}
 	else {
 		file.open("mainDatabase", std::fstream::out | std::fstream::binary);
@@ -26,23 +26,23 @@ mainDatabase::mainDatabase() {
 		Block[0] = record(standString(""));
 		file.write(reinterpret_cast<const char *> (&blockCnt), sizeof(int));
 		file.write(reinterpret_cast<const char *> (&Bin), sizeof(bin));
-		file.write(reinterpret_cast<const char *> (&List), sizeof(list));
-		file.write(reinterpret_cast<const char *> (&Block), sizeof(detailBlock));
+		file.write(reinterpret_cast<const char *> (&List), sizeof(list<record>));
+		file.write(reinterpret_cast<const char *> (&Block), sizeof(block<record>));
 	}
 }
 
 mainDatabase::~mainDatabase() {
 	file.seekp(0);
 	file.write(reinterpret_cast<const char *> (&blockCnt), sizeof(int));
-	file.write(reinterpret_cast<const char *> (&List), sizeof(list));
+	file.write(reinterpret_cast<const char *> (&List), sizeof(list<record>));
 }
 
 void mainDatabase::add(std::string ISBN) {
-	detailBlock Block;
+	block<record> Block;
 	slice key(ISBN);
 	int p = 0;
 	while (List[p].getNext() != -1 && List[p].getFirst() <= key) p = List[p].getNext();
-	file.seekg(blockBegin + sizeof(detailBlock) * p);
+	file.seekg(blockBegin + sizeof(block<record>) * p);
 	file.read(reinterpret_cast<char *> (&Block), sizeof(detailBlock));
 	for (int i = Block.getSize() - 1; i >= 0; i--)
 		if (slice(Block[i]) == key)
