@@ -15,42 +15,48 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="keywordDatabase.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="tools.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="mainDatabase.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="error.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="vector.h">
+    <ClInclude Include="database.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="database.h">
+    <ClInclude Include="bookstore.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="user.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="books.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="finance.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="keywordDatabase.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="tools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="mainDatabase.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="error.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="vector.cpp">
+    <ClCompile Include="bookstore.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="user.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="books.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="finance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

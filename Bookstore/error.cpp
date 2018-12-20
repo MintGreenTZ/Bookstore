@@ -5,12 +5,12 @@
 #include <string>
 #include "error.h"
 
-Error::Error(std::string msg) {
+ErrorException::ErrorException(std::string msg) {
 	this->msg = msg;
 }
 
-Error::~Error() throw() {}
+ErrorException::~ErrorException() throw() {}
 
-std::string Error::getMessage() {
+std::string ErrorException::getMessage() {
 	return msg;
 }
