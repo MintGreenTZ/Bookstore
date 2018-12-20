@@ -7,15 +7,15 @@
 
 #include <string>
 
-class Error {
+class ErrorException {
 	std::string msg;
 public:
-	Error(std::string msg);
-	~Error() throw();
+	ErrorException(std::string msg);
+	~ErrorException() throw();
 	std::string getMessage();
 };
 
 void error(std::string msg) {
-	throw Error(msg);
+	throw ErrorException(msg);
 }
 #endif //BOOKSTORE_ERROR_H

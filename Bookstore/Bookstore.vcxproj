@@ -115,19 +115,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="books.h" />
+    <ClInclude Include="bookstore.h" />
+    <ClInclude Include="database.h" />
     <ClInclude Include="error.h" />
-    <ClInclude Include="keywordDatabase.h" />
-    <ClInclude Include="mainDatabase.h" />
     <ClInclude Include="tools.h" />
-    <ClInclude Include="vector.h" />
+    <ClInclude Include="user.h" />
+    <ClInclude Include="finance.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="books.cpp" />
+    <ClCompile Include="bookstore.cpp" />
     <ClCompile Include="error.cpp" />
-    <ClCompile Include="keywordDatabase.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="mainDatabase.cpp" />
     <ClCompile Include="tools.cpp" />
-    <ClCompile Include="vector.cpp" />
+    <ClCompile Include="user.cpp" />
+    <ClCompile Include="finance.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

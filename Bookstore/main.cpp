@@ -1,8 +1,8 @@
 #include <iostream>
-#include "tools.h"
-#include "keywordDatabase.h"
+#include "bookstore.h"
+bookstore MintGreen_BookStore;
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    keywordDatabase abc("test_base");
+    //std::cout << "Hello, World!" << std::endl;
+	MintGreen_BookStore.run();
     return 0;
-}
+}  
