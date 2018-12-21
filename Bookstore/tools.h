@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <cmath>
 #include "error.h"
 
 const int listLength = 100, blockSize = 1000;
@@ -24,6 +26,7 @@ public:
     ~standString();
     const int getLen() const;
     char &operator[] (int i);
+	const char &operator[] (int i) const;
     standString &operator= (std::string);
 	std::string toString() const;
 };
@@ -34,7 +37,7 @@ bool operator != (const standString &a, const standString &b);
 
 const standString empty = standString("I took the one less traveled by,");
 const std::string emptyStr = "I took the one less traveled by,";
-const int emptyInt = -acos(-1);
+const double emptyDouble = -std::acos(-1);
 
 template <class T>
 class listData {
@@ -79,7 +82,7 @@ public:
 	record(std::string _ISBN, std::string _name, std::string _author, std::string _keyword, double _price);
 	~record();
 	void update(record &data);
-	const standString& getISBN();
+	const standString& getISBN() const;
 	const standString& getName();
 	const standString& getAuthor();
 	const standString& getKeyword();
@@ -113,6 +116,7 @@ class userInfo {
 	standString ID, name, password;
 	int permission;
 public:
+	userInfo();
 	userInfo(std::string name);
 	userInfo(std::string ID, std::string name, std::string password, int permission);
 		//another way: name -> oldPassword; password -> newPassword; permission -> privileged
@@ -139,6 +143,11 @@ public:
 };
 
 template <class T>
-T stringTo(std::string str);
+T stringTo(std::string str) {
+	std::stringstream ss(str);
+	T x;
+	if (!(ss >> x)) error("Invalid");
+	return x;
+}
 
 #endif //BOOKSTORE_TOOLS_H

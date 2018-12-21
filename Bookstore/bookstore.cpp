@@ -4,6 +4,10 @@
 
 #include "bookstore.h"
 
+const int totCommand = 11;
+const std::string Command[totCommand] = { "su", "logout", "useradd", "register", "delete", "passwd",
+										 "select", "modify", "import", "show", "buy" };
+
 bookstore::bookstore() :usr(), book(){
 	
 }
@@ -40,18 +44,17 @@ void bookstore::friendly_mode() {
 std::vector<std::string> bookstore::split(std::string &Line) {
 	std::vector<std::string> ret;
 	std::string str, order[4] = {"-ISBN", "-name", "-author", "-keyword"};
-	int price;
-	stream << Line;
-	stream >> str;
+	std::stringstream ss(Line);
+	ss >> str;
 	ret.push_back(str);
 	for (int i = 0; i < 4; i++)
 		ret.push_back(emptyStr);
-	price = emptyInt;
+	price = emptyDouble;
 	int cnt = 1;
 	if (ret[0] == "modify" || ret[0] == "show") {
-		while (std::getline(stream, str, '=')) {
+		while (std::getline(ss, str, '=')) {
 			int p = 0;
-			while (p < str.length() && str[p] == ' ') p++;
+			while (p < (int)str.length() && str[p] == ' ') p++;
 			str = str.substr(p);
 			if (str == "") break;
 			if (str == "-price") {
@@ -61,16 +64,17 @@ std::vector<std::string> bookstore::split(std::string &Line) {
 				bool suc = 0;
 				for (int i = 0; i < 4; i++)
 					if (str == order[i])
-						std::getline(stream, ret[i + 1], '"'),
-						std::getline(stream, ret[i + 1], '"'),
+						std::getline(ss, ret[i + 1], '"'),
+						std::getline(ss, ret[i + 1], '"'),
 						suc = 1;
 				if (!suc) error("Invalid");
 			}
 		}
 	}
 	else {
-		while (stream >> ret[cnt++]);
+		while (ss >> ret[cnt++]);
 	}
+	return ret;
 }
 
 void bookstore::processLine(std::string &Line) {
@@ -99,8 +103,6 @@ void bookstore::processLine(std::string &Line) {
 		}
 	}
 	catch (ErrorException &ex) {
-		std::string str;
-		while (stream >> str);
 		std::cout << ex.getMessage() << std::endl;
 	}
 	

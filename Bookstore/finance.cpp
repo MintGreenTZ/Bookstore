@@ -26,14 +26,14 @@ finance::~finance() {
 	file.close();
 }
 
-void finance::income(int x){
+void finance::income(double x){
 	cur.getIncome() += x;
 	file.seekp(sizeof(int) + sizeof(financeSlice) * n);
 	file.write(reinterpret_cast<const char *> (&cur), sizeof(financeSlice));
 	n++;
 }
 
-void finance::outcome(int x) {
+void finance::outcome(double x) {
 	cur.getOutcome() += x;
 	file.seekp(sizeof(int) + sizeof(financeSlice) * n);
 	file.write(reinterpret_cast<const char *> (&cur), sizeof(financeSlice));
@@ -51,10 +51,14 @@ void finance::show(int x) {
 
 financeSlice::financeSlice() :income(0), outcome(0) {}
 
-financeSlice::financeSlice(int Income, int Outcome): income(Income), outcome(Outcome) {}
+financeSlice::financeSlice(double Income, double Outcome): income(Income), outcome(Outcome) {}
 
 financeSlice::~financeSlice() {}
 
-int& financeSlice::getIncome() { return income; }
+double& financeSlice::getIncome() { return income; }
 
-int& financeSlice::getOutcome() { return outcome; }
+double& financeSlice::getOutcome() { return outcome; }
+
+financeSlice operator - (financeSlice &a, financeSlice &b) {
+	return financeSlice(a.getIncome() - b.getIncome(), a.getOutcome() - b.getOutcome());
+}

@@ -7,19 +7,16 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "tools.h"
 #include "database.h"
 #include "user.h"
 #include "books.h"
 
-const int totCommand = 11;
-const std::string Command[totCommand] = {"su", "logout", "useradd", "register", "delete", "passwd",
-										 "select", "modify", "import", "show", "buy"};
 class bookstore {
 	user usr;
 	books book;
 	std::fstream file;
-	std::iostream stream;
 	double price;
 public:
 	bookstore();

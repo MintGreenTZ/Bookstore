@@ -53,7 +53,7 @@ public:
 		block<T> Block;
 		int p = 0;
 		while (List[p].getNext() != -1 && List[p].getFirst() <= data) p = List[p].getNext();
-		file.seekg(blockBegin + sizeof(block) * p);
+		file.seekg(blockBegin + sizeof(block<T>) * p);
 		file.read(reinterpret_cast<char *> (&Block), sizeof(block<T>));
 		for (int i = Block.getSize() - 1; i >= 0; i--)
 			if (Block[i] == data)
@@ -89,7 +89,7 @@ public:
 	}
 
 	void del(T data) {
-		if (!(isSameType(T, slice) || isSameType(T, userInfo) || isSameType(T, record))) error("type error at del!");
+		if (!(isSameType(T(), slice()) || isSameType(T(), userInfo()) || isSameType(T(), record()))) error("type error at del!");
 		block<T> Block;
 		int p = 0;
 		while (List[p].getNext() != -1 && List[p].getFirst() <= data) p = List[p].getNext();
@@ -112,13 +112,13 @@ public:
 			file.read(reinterpret_cast<char *> (&Pre), sizeof(block<T>));
 			for (int i = 0; i < List[p].getSize(); i++)
 				Pre[List[q].getSize() + i] = Block[i];
-			Pre.getSize += Block.getSize();
+			Pre.getSize() += Block.getSize();
 			List[List[q].getPre() = List[p].getPre()].getNext() = q;
 			Bin.add(p);
 			file.seekp(blockBegin + sizeof(block<T>) * q);
 			file.write(reinterpret_cast<const char *> (&Pre), sizeof(block<T>));
 		}
-		else if (List[p].getNext() != -1 && List[List[p].getNext()].getSize + List[p].getSize() <= blockSize) {
+		else if (List[p].getNext() != -1 && List[List[p].getNext()].getSize() + List[p].getSize() <= blockSize) {
 			int q = List[p].getNext();
 			block<T> Next;
 			file.seekg(blockBegin + sizeof(block<T>) * q);
@@ -138,7 +138,7 @@ public:
 	}
 
 	void modify(T data) {
-		if (!isSameType(T, userInfo)) error("type error at modify!");
+		if (!isSameType(T(), userInfo())) error("type error at modify!");
 		block<T> Block;
 		int p = 0;
 		while (List[p].getNext() != -1 && List[p].getFirst() <= data) p = List[p].getNext();
@@ -147,7 +147,7 @@ public:
 		bool suc_modify = 0;
 		for (int i = Block.getSize() - 1; i >= 0; i--)
 			if (Block[i] == data) {
-				Block[i] = Block[i].update(data);
+				Block[i].update(data);
 				suc_modify = 1;
 				break;
 			}
@@ -165,8 +165,8 @@ public:
 		bool suc_trade = 0;
 		for (int i = Block.getSize() - 1; i >= 0; i--)
 			if (Block[i] == data) {
-				if (Block[i].getQuantity + det < 0) error("Invalid");
-				Block[i].getQuantity += det;
+				if (Block[i].getQuantity() + det < 0) error("Invalid");
+				Block[i].getQuantity() += det;
 				suc_trade = 1;
 				break;
 			}
@@ -176,7 +176,7 @@ public:
 	}
 
 	T ask(T data) {
-		if (!(isSameType(T, userInfo) || isSameType(T, record))) error("type error at ask!");
+		if (!(isSameType(T(), userInfo()) || isSameType(T(), record()))) error("type error at ask!");
 		block<T> Block;
 		int p = 0;
 		while (List[p].getNext() != -1 && List[p].getFirst() <= data) p = List[p].getNext();
@@ -185,17 +185,20 @@ public:
 		for (int i = Block.getSize() - 1; i >= 0; i--)
 			if (Block[i] == data)
 				return Block[i];
-		if (isSameType(T, userInfo)) error("not find!");
+		if (isSameType(T(), userInfo())) error("not find!");
 		add(data);
+		return data;
 	}
 
 	std::vector<standString> giveMeAll(slice data) {
 		std::vector<standString> ret;
 		block<slice> Block;
 		int p = 0, q;
-		while (List[p].getNext() != -1 && List[List[p].getNext()].getFirst().getKey() < data.getKey()) p = List[p].getNext();
+		while (List[p].getNext() != -1 && List[List[p].getNext()].getFirst().getKeyword() < data.getKey())
+			p = List[p].getNext();
 		q = p;
-		while (List[q].getNext() != -1 && List[List[q].getNext()].getFirst().getKey() <= data.getKey) q = List[q].getNext();
+		while (List[q].getNext() != -1 && List[List[q].getNext()].getFirst().getKeyword() <= data.getKey())
+			q = List[q].getNext();
 		file.seekg(blockBegin + sizeof(block<slice>) * p);
 		for (int i = p; i <= q; i++) {
 			file.read(reinterpret_cast<char *> (&Block), sizeof(block<slice>));

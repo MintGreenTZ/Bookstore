@@ -17,13 +17,12 @@ class books {
 	database<slice> nameDB, authorDB, keyDB;
 	standString ISBN;
 	finance Finance;
-	std::iostream stream;
 public:
 	books();
 	~books();
 	void select(std::string ISBN);
 	void modify(record data);
-	void import(int, int);
+	void import(int, double);
 	void buy(std::string, int);
 	void showFinance(int time = -1);
 	void show(record data);

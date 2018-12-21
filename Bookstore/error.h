@@ -15,7 +15,5 @@ public:
 	std::string getMessage();
 };
 
-void error(std::string msg) {
-	throw ErrorException(msg);
-}
+void error(std::string msg);
 #endif //BOOKSTORE_ERROR_H

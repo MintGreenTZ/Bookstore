@@ -9,17 +9,15 @@
 #include <fstream>
 
 class financeSlice {
-	int income, outcome;
+	double income, outcome;
 public:
 	financeSlice();
-	financeSlice(int Income, int Outcome);
+	financeSlice(double Income, double Outcome);
 	~financeSlice();
-	int& getIncome();
-	int& getOutcome();
+	double& getIncome();
+	double& getOutcome();
 };
-financeSlice operator - (financeSlice &a, financeSlice &b) {
-	return financeSlice(a.getIncome() - b.getIncome(), a.getOutcome() - b.getOutcome());
-}
+financeSlice operator - (financeSlice &a, financeSlice &b);
 
 class finance {
 	int n;
@@ -28,8 +26,8 @@ class finance {
 public:
 	finance();
 	~finance();
-	void income(int x);
-	void outcome(int x);
+	void income(double x);
+	void outcome(double x);
 	void show(int x = -1);
 
 };

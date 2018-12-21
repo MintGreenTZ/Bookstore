@@ -4,12 +4,15 @@
 
 #include <vector>
 #include <set>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 #include "books.h"
 #include "error.h"
 #include "database.h"
 
-books::books() :rec("mainDatabase"), nameDB("nameDatabase"), authorDB("nameDatabase"), keyDB("keyDatabase") {
-	this->ISBN = "";
+books::books() :rec("mainDatabase"), nameDB("nameDatabase"), authorDB("nameDatabase"), keyDB("keyDatabase"),
+	ISBN(""), Finance(){
 }
 
 books::~books () {}
@@ -28,7 +31,7 @@ void books::modify(record data) {
 	if (old.getAuthor() != empty) authorDB.del(slice(old.getAuthor(), old.getISBN()));
 	if (old.getKeyword() != empty) {
 		std::vector<std::string> &&v = split(old.getKeyword());
-		for (int i = 0; i < v.size(); i++)
+		for (unsigned i = 0; i < (unsigned)v.size(); i++)
 			keyDB.del(slice(v[i], old.getISBN()));
 	}
 	record cur = old;
@@ -38,12 +41,12 @@ void books::modify(record data) {
 	if (cur.getAuthor() != empty) authorDB.add(slice(cur.getAuthor(), cur.getISBN()));
 	if (cur.getKeyword() != empty) {
 		std::vector<std::string> &&v = split(cur.getKeyword());
-		for (int i = 0; i < v.size(); i++)
+		for (unsigned i = 0; i < (unsigned)v.size(); i++)
 			keyDB.add(slice(v[i], cur.getISBN()));
 	}
 }
 
-void books::import(int quantity, int cost) {
+void books::import(int quantity, double cost) {
 	rec.trade(record(ISBN), quantity);
 	Finance.outcome(cost);
 }
@@ -74,7 +77,7 @@ void books::show(record data) {
 	bool carry_on = 1, same;
 	standString Min;
 	for (int i = 0; i < cnt; i++)
-		carry_on &= p[i] < v[i].size();
+		carry_on &= p[i] < (int)v[i].size();
 	while (carry_on) {
 		Min = v[0][p[0]];
 		for (int i = 1; i < cnt; i++)
@@ -95,18 +98,18 @@ void books::show(record data) {
 		}
 		carry_on = 1;
 		for (int i = 0; i < cnt; i++)
-			carry_on &= p[i] < v[i].size();
+			carry_on &= p[i] < (int)v[i].size();
 	}
 }
 
 std::vector<std::string> books::split(const standString &obj) {
 	std::string str = obj.toString();
 	std::vector<std::string> ret;
-	for (int i = 0; i < str.length(); i++)
+	for (unsigned i = 0; i < (unsigned)str.length(); i++)
 		if (str[i] == '|')
 			str[i] = ' ';
-	stream << str;
-	while (stream >> str)
+	std::stringstream ss(str);
+	while (ss >> str)
 		ret.push_back(str);
 	return ret;
 }

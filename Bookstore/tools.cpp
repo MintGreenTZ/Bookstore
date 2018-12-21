@@ -21,11 +21,13 @@ standString::standString(std::string str) {
 
 standString::~standString() {};
 
-char& standString::operator[](int i) {return ch[i];}
+char& standString::operator[] (int i) { return ch[i]; }
+
+const char& standString::operator[] (int i) const { return ch[i]; }
 
 const int standString::getLen() const {return len;}
 
-bool operator < (standString &a, standString &b) {
+bool operator < (const standString &a, const standString &b) {
     int lena = a.getLen(), lenb = b.getLen();
     for (int i = 0; i < std::min(lena, lenb); i++) {
         if (a[i] < b[i]) return true;
@@ -34,7 +36,7 @@ bool operator < (standString &a, standString &b) {
     return lena < lenb;
 }
 
-bool operator == (standString &a, standString &b) {
+bool operator == (const standString &a, const standString &b) {
 	int lena = a.getLen(), lenb = b.getLen();
 	if (lena != lenb) return false;
 	for (int i = 0; i < lena; i++)
@@ -42,11 +44,11 @@ bool operator == (standString &a, standString &b) {
 	return true;
 }
 
-bool operator <= (standString &a, standString &b) {
+bool operator <= (const standString &a, const standString &b) {
 	return a < b || a == b;
 }
 
-bool operator != (standString &a, standString &b) {
+bool operator != (const standString &a, const standString &b) {
 	return !(a == b);
 }
 
@@ -116,24 +118,24 @@ void record::update(record &data) {
 	if (data.name != empty) this->name = data.name;
 	if (data.author != empty) this->author = data.author;
 	if (data.keyword != empty) this->keyword = data.keyword;
-	if (std::abs(data.price + emptyInt) > eps) this->price = data.price;
+	if (std::abs(data.price + emptyDouble) > eps) this->price = data.price;
 }
 
 record::~record() {};
 
-bool operator < (record &a, record &b) {
+bool operator < (const record &a, const record &b) {
 	return a.getISBN() < b.getISBN();
 }
 
-bool operator == (record &a, record &b) {
+bool operator == (const record &a, const record &b) {
 	return a.getISBN() == b.getISBN();
 }
 
-bool operator <= (record &a, record &b) {
+bool operator <= (const record &a, const record &b) {
 	return a.getISBN() <= b.getISBN();
 }
 
-const standString& record::getISBN() { return ISBN; }
+const standString& record::getISBN() const { return ISBN; }
 
 const standString& record::getName() { return name; }
 
@@ -149,11 +151,13 @@ void record::print() {
 	std::cout << ISBN.toString();
 	if (name != empty) std::cout << ' ' << name.toString();
 	if (author != empty) std::cout << ' ' << author.toString();
-	if (price != emptyInt) printf(" %.2f", price);
+	if (price != emptyDouble) printf(" %.2f", price);
 	printf("%d±¾\n", quantity);
 }
 
 //******************************************************* userInfo
+
+userInfo::userInfo() {}
 
 userInfo::userInfo(std::string name) {
 	this->name = name;
@@ -223,14 +227,4 @@ void bin::add(int x) {
 
 const int bin::get() {
 	return a[--n];
-}
-
-//******************************************************* stringToInt
-
-template <class T>
-T stringTo(std::string str) {
-	std::stringstream ss(str);
-	T x;
-	if (!(ss >> x)) error("Invalid");
-	return x;
 }

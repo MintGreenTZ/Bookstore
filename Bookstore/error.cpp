@@ -14,3 +14,7 @@ ErrorException::~ErrorException() throw() {}
 std::string ErrorException::getMessage() {
 	return msg;
 }
+
+void error(std::string msg) {
+	throw ErrorException(msg);
+}
