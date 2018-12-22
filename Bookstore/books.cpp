@@ -11,8 +11,21 @@
 #include "error.h"
 #include "database.h"
 
-books::books() :rec("mainDatabase"), nameDB("nameDatabase"), authorDB("authorDatabase"), keyDB("keyDatabase"),
-	ISBN(""), Finance(){
+books::books() :rec("mainDatabase"), nameDB("nameDatabase"), authorDB("authorDatabase"), keyDB("keyDatabase"), Finance(){
+	std::fstream file;
+	file.open("curISBN", std::fstream::in | std::fstream::out | std::fstream::binary);
+	if (file) {
+		file.seekg(0);
+		file.read(reinterpret_cast<char *> (&ISBN), sizeof(standString));
+	}
+	else {
+		std::ofstream ost("curISBN");
+		ost.close();
+		file.open("curISBN", std::fstream::in | std::fstream::out | std::fstream::binary);
+		file.seekp(0);
+		ISBN = "";
+		file.write(reinterpret_cast<const char *> (&ISBN), sizeof(standString));
+	}
 }
 
 books::~books () {}

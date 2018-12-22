@@ -15,7 +15,7 @@ bookstore::bookstore() :usr(), book(){
 
 bookstore::~bookstore() {
 	//std::cout << "finished" << std::endl;
-	//Sleep(100000);
+	//Sleep(10000);
 }
 
 void bookstore::run() {

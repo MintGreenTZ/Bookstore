@@ -6,9 +6,24 @@
 #include "error.h"
 
 user::user():userDB("userDatabase") {
-	userDB.add(userInfo("root", "root", "sjtu", 7));
-	this->name = "root";
-	this->permission = 7;
+	std::fstream file;
+	file.open("curUser", std::fstream::in | std::fstream::out | std::fstream::binary);
+	if (file) {
+		file.seekg(0);
+		file.read(reinterpret_cast<char *> (&name), sizeof(standString));
+		file.read(reinterpret_cast<char *> (&permission), sizeof(int));
+	}
+	else {
+		std::ofstream ost("curUser");
+		ost.close();
+		file.open("curUser", std::fstream::in | std::fstream::out | std::fstream::binary);
+		file.seekp(0);
+		name = "root";
+		permission = 7;
+		file.write(reinterpret_cast<const char *> (&name), sizeof(standString));
+		file.write(reinterpret_cast<const char *> (&permission), sizeof(int));
+		userDB.add(userInfo("root", "root", "sjtu", 7));
+	}
 }
 
 user::~user() {

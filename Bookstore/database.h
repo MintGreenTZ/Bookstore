@@ -22,9 +22,8 @@ class database {
 	std::fstream file;
 public:
 	database(std::string keyName) {
-		file.open(keyName, std::fstream::in);
+		file.open(keyName, std::fstream::in | std::fstream::out | std::fstream::binary);
 		if (file) {
-			file.open(keyName, std::fstream::in | std::fstream::out | std::fstream::binary);
 			file.seekg(0);
 			file.read(reinterpret_cast<char *> (&blockCnt), sizeof(int));
 			file.read(reinterpret_cast<char *> (&List), sizeof(list<T>));
@@ -39,6 +38,7 @@ public:
 			List[0].getPre() = List[0].getNext() = -1;
 			List[0].getSize() = Block.getSize() = 1;
 			Block[0] = T();
+			file.seekp(0);
 			file.write(reinterpret_cast<const char *> (&blockCnt), sizeof(int));
 			file.write(reinterpret_cast<const char *> (&List), sizeof(list<T>));
 			file.write(reinterpret_cast<const char *> (&Bin), sizeof(bin));
@@ -204,14 +204,11 @@ public:
 	std::vector<standString> giveMeAll(standString key) {
 		std::vector<standString> ret;
 		block<T> Block;
-		int p = 0, q;
+		int p = 0;
 		while (List[p].getNext() != -1 && List[List[p].getNext()].getFirst().getKey() < key)
 			p = List[p].getNext();
-		q = p;
-		while (List[q].getNext() != -1 && List[List[q].getNext()].getFirst().getKey() <= key)
-			q = List[q].getNext();
-		file.seekg(blockBegin + sizeof(block<T>) * p);
-		for (int i = p; i <= q; i++) {
+		for (; p != -1 && List[p].getFirst().getKey() <= key; p = List[p].getNext()) {
+			file.seekg(blockBegin + sizeof(block<T>) * p);
 			file.read(reinterpret_cast<char *> (&Block), sizeof(block<T>));
 			for (int i = 0; i < Block.getSize(); i++)
 				if (Block[i].getKey() == key)
