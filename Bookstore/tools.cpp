@@ -1,4 +1,4 @@
-//
+ï»¿//
 // Created by mintgreen on 18-12-14.
 //
 
@@ -104,7 +104,7 @@ void record::print() {
 	if (author != empty) std::cout << '\t' << author.toString();
 	if (keyword != empty) std::cout << '\t' << keyword.toString();
 	if (price != emptyDouble) printf("\t%.2f", price);
-	printf("\t%d±¾\n", quantity);
+	printf("\t%dæœ¬\n", quantity);
 }
 
 bool operator < (const record &a, const record &b) {
