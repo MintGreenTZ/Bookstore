@@ -8,9 +8,7 @@
 
 //******************************************************* standString
 
-standString::standString() {
-    ch[0] = '\0';
-}
+standString::standString() :standString("I took the one less traveled by,") {}
 
 standString::standString(std::string str) {
     len = str.length();
@@ -21,11 +19,11 @@ standString::standString(std::string str) {
 
 standString::~standString() {};
 
+const int standString::getLen() const { return len; }
+
 char& standString::operator[] (int i) { return ch[i]; }
 
 const char& standString::operator[] (int i) const { return ch[i]; }
-
-const int standString::getLen() const {return len;}
 
 bool operator < (const standString &a, const standString &b) {
     int lena = a.getLen(), lenb = b.getLen();
@@ -67,48 +65,11 @@ std::string standString::toString() const{
 	return ret;
 }
 
-//******************************************************* slice
-
-slice::slice() {
-	this->key = "";
-	this->ISBN = "";
-};
-
-slice::slice(std::string _key, std::string _ISBN) :key(_key), ISBN(_ISBN){}
-
-slice::slice(const standString &_key, const standString &_ISBN) : key(_key), ISBN(_ISBN) {}
-
-slice::slice(standString _key) :key(_key), ISBN("") {}
-
-slice::slice(record data) :key(data.getISBN()), ISBN(""){}
-
-slice::~slice() {};
-
-bool operator < (const slice &a, const slice &b) {
-	return (a.getKey() < b.getKey()) || (a.getKey() == b.getKey()) && (a.getISBN() < b.getISBN());
-}
-
-bool operator == (const slice &a, const slice &b) {
-	return (a.getKey() == b.getKey()) && (a.getISBN() == b.getISBN());
-}
-
-bool operator <= (const slice &a, const slice &b) {
-	return (a < b) || (a == b);
-}
-
-const standString& slice::getKey() const { return key; }
-
-const standString& slice::getISBN() const { return ISBN; }
-
 //******************************************************* record
 
-record::record() {
-	this->ISBN = "";
-}
+record::record() :ISBN(""), name(empty), author(empty), keyword(empty){}
 
-record::record(standString ISBN) {
-	this->ISBN = ISBN;
-}
+record::record(standString _ISBN) :ISBN(_ISBN) {}
 
 record::record(std::string _ISBN, std::string _name, std::string _author, std::string _keyword, double _price) :
 	ISBN(_ISBN), name(_name), author(_author), keyword(_keyword), price(_price) {};
@@ -118,10 +79,33 @@ void record::update(record &data) {
 	if (data.name != empty) this->name = data.name;
 	if (data.author != empty) this->author = data.author;
 	if (data.keyword != empty) this->keyword = data.keyword;
-	if (std::abs(data.price + emptyDouble) > eps) this->price = data.price;
+	if (std::abs(data.price - emptyDouble) > eps) this->price = data.price;
 }
 
 record::~record() {};
+
+const standString& record::getISBN() const { return ISBN; }
+
+const standString& record::getName() const { return name; }
+
+const standString& record::getAuthor() const { return author; }
+
+const standString& record::getKeyword() const { return keyword; }
+
+const standString& record::getKey() const { return ISBN; };
+
+int& record::getQuantity() { return quantity; }
+
+double& record::getPrice() { return price; }
+
+void record::print() {
+	std::cout << ISBN.toString();
+	if (name != empty) std::cout << '\t' << name.toString();
+	if (author != empty) std::cout << '\t' << author.toString();
+	if (keyword != empty) std::cout << '\t' << keyword.toString();
+	if (price != emptyDouble) printf("\t%.2f", price);
+	printf("\t%d±¾\n", quantity);
+}
 
 bool operator < (const record &a, const record &b) {
 	return a.getISBN() < b.getISBN();
@@ -135,48 +119,48 @@ bool operator <= (const record &a, const record &b) {
 	return a.getISBN() <= b.getISBN();
 }
 
-const standString& record::getISBN() const { return ISBN; }
+//******************************************************* slice
 
-const standString& record::getName() { return name; }
+slice::slice() :key(""), ISBN("") {};
 
-const standString& record::getAuthor() { return author; }
+slice::slice(const std::string &_key, const std::string &_ISBN) :key(_key), ISBN(_ISBN) {}
 
-const standString& record::getKeyword() { return keyword; }
+slice::slice(const standString &_key, const standString &_ISBN) : key(_key), ISBN(_ISBN) {}
 
-int& record::getQuantity() { return quantity; }
+slice::slice(const standString &_key) : key(_key), ISBN("") {}
 
-double& record::getPrice() { return price; }
+slice::slice(const record &data) : key(data.getISBN()), ISBN("") {}
 
-void record::print() {
-	std::cout << ISBN.toString();
-	if (name != empty) std::cout << ' ' << name.toString();
-	if (author != empty) std::cout << ' ' << author.toString();
-	if (price != emptyDouble) printf(" %.2f", price);
-	printf("%d±¾\n", quantity);
+slice::~slice() {};
+
+const standString& slice::getKey() const { return key; }
+
+const standString& slice::getISBN() const { return ISBN; }
+
+bool operator < (const slice &a, const slice &b) {
+	return (a.getKey() < b.getKey()) || (a.getKey() == b.getKey()) && (a.getISBN() < b.getISBN());
+}
+
+bool operator == (const slice &a, const slice &b) {
+	return (a.getKey() == b.getKey()) && (a.getISBN() == b.getISBN());
+}
+
+bool operator <= (const slice &a, const slice &b) {
+	return (a < b) || (a == b);
 }
 
 //******************************************************* userInfo
 
-userInfo::userInfo() {}
+userInfo::userInfo() :ID(""), name(empty), password(empty), permission(0) {}
 
-userInfo::userInfo(std::string name) {
-	this->name = name;
-};
+userInfo::userInfo(std::string _ID): ID(_ID), name(empty), password(empty), permission(0) {};
 
 //another way: name -> oldPassword; password -> newPassword; permission -> privileged
-userInfo::userInfo(std::string ID, std::string name, std::string password, int permission) {
-	this->ID = ID;
-	this->name = name;
-	this->password = password;
-	this->permission = permission;
-}
+userInfo::userInfo(std::string _ID, std::string _name, std::string _password, int _permission)
+	:ID(_ID), name(_name), password(_password), permission(_permission) {}
 
-userInfo::userInfo(standString ID, standString name, standString password, int permission) {
-	this->ID = ID;
-	this->name = name;
-	this->password = password;
-	this->permission = permission;
-}
+userInfo::userInfo(standString _ID, standString _name, standString _password, int _permission)
+	: ID(_ID), name(_name), password(_password), permission(_permission) {}
 
 userInfo::~userInfo() {}
 
@@ -185,6 +169,8 @@ const int userInfo::getPermission() const { return permission; }
 const standString userInfo::getName() const { return name; }
 
 const standString userInfo::getID() const { return ID; }
+
+const standString userInfo::getKey() const { return ID; };
 
 bool userInfo::check(std::string x) {
 	return standString(x) == password;
@@ -197,19 +183,19 @@ bool userInfo::check(standString x) {
 //another way: name -> oldPassword; password -> newPassword; permission -> privileged
 void userInfo::update(userInfo data) {
 	if (!data.getPermission() && !check(data.getName())) error("Invalid");
-	password = data.password;
+	this->password = data.password;
 }
 
 bool operator < (const userInfo &a, const userInfo &b) {
-	return a.getName() < b.getName();
+	return a.getID() < b.getID();
 }
 
 bool operator == (const userInfo &a, const userInfo &b) {
-	return a.getName() == b.getName();
+	return a.getID() == b.getID();
 }
 
 bool operator <= (const userInfo &a, const userInfo &b) {
-	return a.getName() <= b.getName();
+	return a.getID() <= b.getID();
 }
 
 //******************************************************* bin

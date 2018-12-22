@@ -2,6 +2,9 @@
 // Created by mintgreen on 18-12-17.
 //
 
+//the finance log which is stored in the file
+//support add to the end and ask suffix sum
+
 #ifndef BOOKSTORE_FINANCE_H
 #define BOOKSTORE_FINANCE_H
 

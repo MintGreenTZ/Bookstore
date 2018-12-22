@@ -2,6 +2,8 @@
 // Created by mintgreen on 18-12-17.
 //
 
+//the top organzation focused on communication with users
+
 #ifndef BOOKSTORE_BOOKSTORE_H
 #define BOOKSTORE_BOOKSTORE_H
 
@@ -24,6 +26,7 @@ public:
 	void run();
 	void file_mode();
 	void friendly_mode();
+	//spilit command according to space (modify and show command otherwise)
 	std::vector<std::string> split(std::string &Line);
 	void processLine(std::string &Line);
 };

@@ -1,28 +1,39 @@
-useradd worker0 worker0_password 3 丁谦清
+modify -name="芒果街，我自己的小屋"
+import 48 233.33
+select 9787544287722
+modify -ISBN=9787544287723
+select 9787544287722
+modify -ISBN=9787544287723
+select 9787544287723
+modify -name="芒果街，我自己的小屋" -keyword="文学|随笔" -author="桑德拉·希斯内罗丝"
+import 48 233.33
 logout
-su worker0 worker0_password
-useradd user0 user0_password 1 叶发
-logout
-register user1 user1_password 韩青
+show -ISBN=9787544287722
+show -ISBN=9787544287723
+register user0 user0_password 谭进
 su user0 user0_password
-logout
-su user1 user1_password
+show -ISBN=9787544287723
+buy 9787544287723 0
 logout
 su root sjtu
-useradd worker1 worker1_password 3 林娟
-useradd user2 user2_password 1 常君莲
+show finance
+select 9787544287723
+modify -price=45.00
 logout
-register user3 user3_password 郭涛心
-su user2 user2_password
+su user0 user0_password
+buy 9787544287723 24
+buy 9787544287723 25
 logout
-su user3 user3_password
+su root sjtu
+select 9787544287723
+modify -price=40.00
+import 1 10
 logout
-su worker1 worker1_password
-useradd user4 user4_password 1 姜启
+su user0 user0_password
+show -ISBN=9787544287723
+buy 9787544287723 25
 logout
-register user5 user5_password 蒋爱枝
-su user4 user4_password
-logout
-su user5 user5_password
+su root sjtu
+show finance
 logout
 exit

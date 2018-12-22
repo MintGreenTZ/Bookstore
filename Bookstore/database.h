@@ -27,45 +27,53 @@ public:
 			file.open(keyName, std::fstream::in | std::fstream::out | std::fstream::binary);
 			file.seekg(0);
 			file.read(reinterpret_cast<char *> (&blockCnt), sizeof(int));
-			file.read(reinterpret_cast<char *> (&Bin), sizeof(bin));
 			file.read(reinterpret_cast<char *> (&List), sizeof(list<T>));
+			file.read(reinterpret_cast<char *> (&Bin), sizeof(bin));
 		}
 		else {
+			std::ofstream ost(keyName);
+			ost.close();
 			file.open(keyName, std::fstream::in | std::fstream::out | std::fstream::binary);
 			blockCnt = 1;
-			Bin.get();
+			Bin.get(); //the first one we get must be 0
 			List[0].getPre() = List[0].getNext() = -1;
+			List[0].getSize() = Block.getSize() = 1;
 			Block[0] = T();
 			file.write(reinterpret_cast<const char *> (&blockCnt), sizeof(int));
-			file.write(reinterpret_cast<const char *> (&Bin), sizeof(bin));
 			file.write(reinterpret_cast<const char *> (&List), sizeof(list<T>));
-			file.write(reinterpret_cast<const char *> (&Block), sizeof(block<T>) * listLength);
+			file.write(reinterpret_cast<const char *> (&Bin), sizeof(bin));
+			for (int i = 0; i < listLength; i++)
+				file.write(reinterpret_cast<const char *> (&Block), sizeof(block<T>));
 		}
 	}
+
 	~database() {
 		file.seekp(0);
 		file.write(reinterpret_cast<const char *> (&blockCnt), sizeof(int));
-		file.write(reinterpret_cast<const char *> (&Bin), sizeof(bin));
 		file.write(reinterpret_cast<const char *> (&List), sizeof(list<T>));
+		file.write(reinterpret_cast<const char *> (&Bin), sizeof(bin));
 		file.close();
 	}
+
+	//add one element to the database (for all kinds) (need to reload < and <=) (throw error when already have one)
 	void add(T data) {
 		block<T> Block;
 		int p = 0;
-		while (List[p].getNext() != -1 && List[p].getFirst() <= data) p = List[p].getNext();
+		while (List[p].getNext() != -1 && List[List[p].getNext()].getFirst() <= data) p = List[p].getNext();
 		file.seekg(blockBegin + sizeof(block<T>) * p);
 		file.read(reinterpret_cast<char *> (&Block), sizeof(block<T>));
-		for (int i = Block.getSize() - 1; i >= 0; i--)
-			if (Block[i] == data)
-				return;
-			else if (Block[i] < data) {
+		for (int i = Block.getSize() - 1; i >= 0; i--) {
+			if (Block[i] == data) error("Invalid");
+			if (Block[i] < data) {
 				for (int j = Block.getSize() - 1; j > i; j--)
 					Block[j + 1] = Block[j];
 				Block[i + 1] = data;
 				Block.getSize()++;
 				List[p].getSize()++;
+				List[p].getFirst() = Block[0];
 				break;
 			}
+		}
 		if (Block.getSize() == blockSize * 2) {
 			block<T> extend;
 			for (int i = 0; i < blockSize; i++)
@@ -88,11 +96,11 @@ public:
 		}
 	}
 
+	//delete one element to the database (for all kinds) (need to reload < and <=) (throw error when can't find)
 	void del(T data) {
-		if (!(isSameType(T(), slice()) || isSameType(T(), userInfo()) || isSameType(T(), record()))) error("type error at del!");
 		block<T> Block;
 		int p = 0;
-		while (List[p].getNext() != -1 && List[p].getFirst() <= data) p = List[p].getNext();
+		while (List[p].getNext() != -1 && List[List[p].getNext()].getFirst() <= data) p = List[p].getNext();
 		file.seekg(blockBegin + sizeof(block<T>) * p);
 		file.read(reinterpret_cast<char *> (&Block), sizeof(block<T>));
 		bool suc_del = 0;
@@ -104,7 +112,7 @@ public:
 				suc_del = 1;
 				break;
 			}
-		if (!suc_del) error("delete fail!");
+		if (!suc_del) error("Invalid");
 		if (List[p].getPre() != -1 && List[List[p].getPre()].getSize() + List[p].getSize() <= blockSize) {
 			int q = List[p].getPre();
 			block<T> Pre;
@@ -113,7 +121,7 @@ public:
 			for (int i = 0; i < List[p].getSize(); i++)
 				Pre[List[q].getSize() + i] = Block[i];
 			Pre.getSize() += Block.getSize();
-			List[List[q].getPre() = List[p].getPre()].getNext() = q;
+			List[List[q].getNext() = List[p].getNext()].getPre() = q;;
 			Bin.add(p);
 			file.seekp(blockBegin + sizeof(block<T>) * q);
 			file.write(reinterpret_cast<const char *> (&Pre), sizeof(block<T>));
@@ -137,13 +145,13 @@ public:
 		}
 	}
 
-	void modify(T data) {
-		if (!isSameType(T(), userInfo())) error("type error at modify!");
-		block<T> Block;
+	//modify a user's information (throw error when not found)
+	void modify(userInfo data) {
+		block<userInfo> Block;
 		int p = 0;
-		while (List[p].getNext() != -1 && List[p].getFirst() <= data) p = List[p].getNext();
-		file.seekg(blockBegin + sizeof(block<T>) * p);
-		file.read(reinterpret_cast<char *> (&Block), sizeof(block<T>));
+		while (List[p].getNext() != -1 && List[List[p].getNext()].getFirst() <= data) p = List[p].getNext();
+		file.seekg(blockBegin + sizeof(block<userInfo>) * p);
+		file.read(reinterpret_cast<char *> (&Block), sizeof(block<userInfo>));
 		bool suc_modify = 0;
 		for (int i = Block.getSize() - 1; i >= 0; i--)
 			if (Block[i] == data) {
@@ -151,15 +159,16 @@ public:
 				suc_modify = 1;
 				break;
 			}
-		if (!suc_modify) error("modify fail!");
-		file.seekp(blockBegin + sizeof(block<T>) * p);
-		file.write(reinterpret_cast<const char *> (&Block), sizeof(block<T>));
+		if (!suc_modify) error("Invalid");
+		file.seekp(blockBegin + sizeof(block<userInfo>) * p);
+		file.write(reinterpret_cast<const char *> (&Block), sizeof(block<userInfo>));
 	}
 
+	//modify books' quantity information (throw error when not found or not sufficient)
 	void trade(record data, int det) {
 		block<record> Block;
 		int p = 0;
-		while (List[p].getNext() != -1 && List[p].getFirst() <= data) p = List[p].getNext();
+		while (List[p].getNext() != -1 && List[List[p].getNext()].getFirst() <= data) p = List[p].getNext();
 		file.seekg(blockBegin + sizeof(block<record>) * p);
 		file.read(reinterpret_cast<char *> (&Block), sizeof(block<record>));
 		bool suc_trade = 0;
@@ -175,38 +184,52 @@ public:
 		file.write(reinterpret_cast<const char *> (&Block), sizeof(block<record>));
 	}
 
-	T ask(T data) {
+	//ask the detailed information with only a key (throw error when not find)
+	T ask(standString key) {
 		if (!(isSameType(T(), userInfo()) || isSameType(T(), record()))) error("type error at ask!");
 		block<T> Block;
 		int p = 0;
-		while (List[p].getNext() != -1 && List[p].getFirst() <= data) p = List[p].getNext();
+		while (List[p].getNext() != -1 && List[List[p].getNext()].getFirst().getKey() <= key) p = List[p].getNext();
 		file.seekg(blockBegin + sizeof(block<T>) * p);
 		file.read(reinterpret_cast<char *> (&Block), sizeof(block<T>));
 		for (int i = Block.getSize() - 1; i >= 0; i--)
-			if (Block[i] == data)
+			if (Block[i].getKey() == key)
 				return Block[i];
-		if (isSameType(T(), userInfo())) error("not find!");
-		add(data);
-		return data;
+		error("not find!");
+		return T();
 	}
 
-	std::vector<standString> giveMeAll(slice data) {
+	//return all elements' ISBNs which keys are satisfied (catar to both record and slice)
+	template <class T>
+	std::vector<standString> giveMeAll(standString key) {
 		std::vector<standString> ret;
-		block<slice> Block;
+		block<T> Block;
 		int p = 0, q;
-		while (List[p].getNext() != -1 && List[List[p].getNext()].getFirst().getKeyword() < data.getKey())
+		while (List[p].getNext() != -1 && List[List[p].getNext()].getFirst().getKey() < key)
 			p = List[p].getNext();
 		q = p;
-		while (List[q].getNext() != -1 && List[List[q].getNext()].getFirst().getKeyword() <= data.getKey())
+		while (List[q].getNext() != -1 && List[List[q].getNext()].getFirst().getKey() <= key)
 			q = List[q].getNext();
-		file.seekg(blockBegin + sizeof(block<slice>) * p);
+		file.seekg(blockBegin + sizeof(block<T>) * p);
 		for (int i = p; i <= q; i++) {
-			file.read(reinterpret_cast<char *> (&Block), sizeof(block<slice>));
+			file.read(reinterpret_cast<char *> (&Block), sizeof(block<T>));
 			for (int i = 0; i < Block.getSize(); i++)
-				if (Block[i].getKey() == data.getKey())
+				if (Block[i].getKey() == key)
 					ret.push_back(Block[i].getISBN());
 		}
 		return ret;
+	}
+
+	//show all the elements in database (only support record)
+	void showAll() {
+		block<record> Block;
+		for (int p = 0; p != -1; p = List[p].getNext()) {
+			file.seekg(blockBegin + sizeof(block<record>) * p);
+			file.read(reinterpret_cast<char *> (&Block), sizeof(block<record>));
+			for (int i = 0; i < Block.getSize(); i++)
+				if (!(p == 0 && i == 0))
+					Block[i].print();
+		}
 	}
 };
 #endif //BOOKSTORE_DATABASE_H

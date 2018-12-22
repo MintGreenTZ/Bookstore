@@ -14,9 +14,12 @@ finance::finance() {
 		file.read(reinterpret_cast<char *> (&cur), sizeof(financeSlice));
 	}
 	else {
+		std::ofstream ost("finance");
+		ost.close();
 		file.open("finance", std::fstream::in | std::fstream::out | std::fstream::binary);
 		n = 1;
 		cur = financeSlice();
+		file.seekp(0);
 		file.write(reinterpret_cast<const char *> (&n), sizeof(int));
 		file.write(reinterpret_cast<const char *> (&cur), sizeof(financeSlice));
 	}
