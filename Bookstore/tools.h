@@ -119,7 +119,7 @@ public:
 	//the key word to compare (used for funtion:giveMeAll)
 	const standString &getKey() const;
 	const standString &getISBN() const;
-	constexpr bool isSlice() { return true; }
+	//constexpr bool isSlice() { return true; }
 };
 
 bool operator < (const slice &a, const slice &b);
