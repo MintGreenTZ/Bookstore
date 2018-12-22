@@ -200,7 +200,6 @@ public:
 	}
 
 	//return all elements' ISBNs which keys are satisfied (catar to both record and slice)
-	template <class T>
 	std::vector<standString> giveMeAll(standString key) {
 		std::vector<standString> ret;
 		block<T> Block;

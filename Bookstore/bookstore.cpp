@@ -2,7 +2,6 @@
 // Created by mintgreen on 18-12-17.
 //
 
-#include <windows.h>
 #include "bookstore.h"
 
 const int totCommand = 12;

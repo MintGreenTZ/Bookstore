@@ -96,13 +96,13 @@ void books::show(record data, int permission) {
 	int cnt = 0;
 	try {
 		if (data.getISBN() != empty)
-			v[cnt++] = rec.giveMeAll<record>(rec.ask(data.getISBN()).getKey());
+			v[cnt++] = rec.giveMeAll(rec.ask(data.getISBN()).getKey());
 		if (data.getName() != empty)
-			v[cnt++] = nameDB.giveMeAll<slice>(data.getName());
+			v[cnt++] = nameDB.giveMeAll(data.getName());
 		if (data.getAuthor() != empty)
-			v[cnt++] = authorDB.giveMeAll<slice>(data.getAuthor());
+			v[cnt++] = authorDB.giveMeAll(data.getAuthor());
 		if (data.getKeyword() != empty)
-			v[cnt++] = keyDB.giveMeAll<slice>(data.getKeyword());
+			v[cnt++] = keyDB.giveMeAll(data.getKeyword());
 		if (!cnt) { rec.showAll(); return; }
 	}
 	catch (ErrorException) {
