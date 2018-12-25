@@ -32,6 +32,10 @@ user::~user() {
 
 const int user::getPermission() const { return permission; }
 
+const std::string user::getName() const {
+	return name.toString();
+}
+
 void user::log(std::string userID, std::string password) {
 	userInfo info = userDB.ask(userID);
 	if (info.getPermission() < permission || password != emptyStr && info.check(password)) {

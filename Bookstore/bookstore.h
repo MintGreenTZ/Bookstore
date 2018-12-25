@@ -10,6 +10,9 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <ctime>
+#include <random>
+#include "windows.h"
 #include "tools.h"
 #include "database.h"
 #include "user.h"
@@ -25,10 +28,12 @@ public:
 	~bookstore();
 	void run();
 	void file_mode();
+	void greet();
 	void friendly_mode();
 	//spilit command according to space (modify and show command otherwise)
 	std::vector<std::string> split(std::string &Line);
 	void processLine(std::string &Line);
+	void processLineFriendly(std::string &Line);
 };
 
 #endif //BOOKSTORE_BOOKSTORE_H

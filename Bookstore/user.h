@@ -21,6 +21,7 @@ public:
 	user();
 	~user();
 	const int getPermission() const;
+	const std::string getName() const;
 	void log(std::string userID, std::string password = emptyStr);
 	void logout();
 	void useradd(std::string userID, std::string password, int permission, std::string name);
